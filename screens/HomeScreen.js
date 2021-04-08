@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {View, StyleSheet, Modal, TouchableHighlight, FlatList} from 'react-native';
+import {View, StyleSheet, Modal, TouchableHighlight, FlatList, Alert} from 'react-native';
 import {Text, Button, Input} from 'react-native-elements';
 import firebase from '../firebase/firebase';
 import 'firebase/firestore';
@@ -14,9 +14,6 @@ const HomeScreen = ({navigation}) => {
     const currentUser = firebase.firebase.auth().currentUser.uid;
     const [ listOfData, setListOfData ] = useState([]);
 
-    //(async () => {
-    //}) 
-
     useEffect(() => {
         const query = firebase.db.collection('users').doc(currentUser).onSnapshot(doc => {
             if(!doc.exists){
@@ -30,7 +27,6 @@ const HomeScreen = ({navigation}) => {
                 }])
         })
       }, [currentUser]);
-      console.log(listOfData);
 
     const logOut = async() => {
         try{
@@ -43,26 +39,21 @@ const HomeScreen = ({navigation}) => {
             setError(err.message);
         }
     }
-
-    const getUser = async() => {
-        //const collection = firebase.db.collection('users').get();
-        //const user = (await collection).docs(currentUser).get();
-        const query = firebase.db.collection('users').doc(currentUser).onSnapshot(doc => {
-            const { firstName, lastName, age } = doc.data();
-            listOfData.push({
-                firstName,
-                lastName,
-                age,
-            })
-            setListOfData(listOfData)
-        })
-    }
+    
     const addProfile = async() => {
         firebase.db.collection('users').doc(currentUser).set({
             firstName: firstName,
             lastName: lastName,
             age : age
         })
+    }
+
+    const suppProfile = async() => {
+        const documentId = firebase.db.collection('users').doc(currentUser)
+            documentId.delete().then((res) => {
+            alert('Your profile has been deleted');
+            setListOfData([])
+      })
     }
 
     function Item({ item }) {
@@ -73,7 +64,7 @@ const HomeScreen = ({navigation}) => {
             <Text>{item.lastName}</Text>
           </View>
         );
-      }
+    }
 
     return  <View>
                 <Text>Home screen</Text>
@@ -115,12 +106,12 @@ const HomeScreen = ({navigation}) => {
                     }}>
                     <Text style={styles.textStyle}>Show Modal</Text>
                 </TouchableHighlight>
-                <Button title="getDoc" onPress={() => getUser() }></Button>
                 {
                     listOfData>=0 ? 
                     <Text>Aucune données</Text> 
                     : <FlatList style={styles.list} data={listOfData}  renderItem={({ item }) => <Item item={item} /> } keyExtractor={item => item.firstName} />
                 }
+                <Button title="suppDoc" onPress={() => suppProfile() }></Button>
             </View>
 };
 
