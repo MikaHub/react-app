@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import React, { useState } from 'react';
+import {TouchableOpacity, View, StyleSheet} from 'react-native';
 import {Text, Input, Button} from 'react-native-elements';
 import firebase from '../firebase/firebase';
 
@@ -8,7 +8,7 @@ const SigninScreen = ({navigation}) => {
     const [ password, setPassword ] = useState('');
     const [ error, setError ] = useState('');
 
-    const signIn = async() => {
+    const SignIn = async() => {
         try{
             const response = await firebase.firebase.auth().signInWithEmailAndPassword(email, password);
             navigation.navigate('Home');
@@ -17,7 +17,7 @@ const SigninScreen = ({navigation}) => {
             setError(err.message);
         }
     }
-    return  <View>
+    return  <View style={style.view}>
                 <Input label="Email" value={email} onChangeText={setEmail}></Input>
                 <Input label="Password" value={password} onChangeText={setPassword} secureTextEntry></Input>
                 {
@@ -25,11 +25,27 @@ const SigninScreen = ({navigation}) => {
                     <Text style={{ color:'red' }}>{error}</Text>
                     : null
                 }
-                <Button title="SignIn" onPress={() => signIn() }></Button>
+                <Button style={style.button} title="Se connecter" onPress={() => SignIn() }></Button>
                 <TouchableOpacity onPress={() =>  navigation.navigate('Signup')}>
-                    <Text>Already new? Create an account here</Text>
+                    <Text style={style.text}>Already new? Create an account here</Text>
                 </TouchableOpacity>
             </View>
 };
+
+const style = StyleSheet.create({
+    view: {
+        backgroundColor: '#F6F6F6',
+    },
+    button:{
+        paddingRight: 10,
+        paddingLeft: 10,
+        marginTop: 30
+    },
+    text:{
+        paddingLeft: 10,
+        marginTop: 20,
+        color: 'black',
+    }
+});
 
 export default SigninScreen;

@@ -26,13 +26,13 @@ const HomeScreen = ({navigation}) => {
                 age,
                 }])
         })
-      }, [currentUser]);
+    }, [currentUser]);
 
-    const logOut = async() => {
+    const LogOut = async() => {
         try{
             await firebase.firebase.auth().signOut()
             navigation.reset({
-                routes: [{name : 'Signup'}]
+                routes: [{name : 'Signin'}]
             })
         }
         catch(err){
@@ -40,7 +40,7 @@ const HomeScreen = ({navigation}) => {
         }
     }
     
-    const addProfile = async() => {
+    const AddProfile = async() => {
         firebase.db.collection('users').doc(currentUser).set({
             firstName: firstName,
             lastName: lastName,
@@ -48,10 +48,10 @@ const HomeScreen = ({navigation}) => {
         })
     }
 
-    const suppProfile = async() => {
+    const SuppProfile = async() => {
         const documentId = firebase.db.collection('users').doc(currentUser)
             documentId.delete().then((res) => {
-            alert('Your profile has been deleted');
+            alert('Votre profil à bien été supprimé');
             setListOfData([])
       })
     }
@@ -67,12 +67,16 @@ const HomeScreen = ({navigation}) => {
     }
 
     return  <View>
-                <Text>Home screen</Text>
-                <Button style={styles.button} title="Logout" onPress={() => logOut() }></Button>
+                <Button style={style.buttonLogOut} title="Logout" onPress={() => LogOut() }></Button>
                 {
                     error ? 
                     <Text style={{ color:'red' }}>{error}</Text>
                     : null
+                }
+                {
+                    listOfData>=0 ? 
+                    <Text style={style.text}>Vous n'avez pas encore créé de profil !</Text> 
+                    : <FlatList style={style.list} data={listOfData}  renderItem={({ item }) => <Item item={item} /> } keyExtractor={item => item.firstName} />
                 }
                 <Modal
                     animationType="slide"
@@ -81,52 +85,77 @@ const HomeScreen = ({navigation}) => {
                     onRequestClose={() => {
                     Alert.alert('Modal has been closed.');
                     }}>
-                    <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
+                    <View style={style.centeredView}>
+                    <View style={style.modalView}>
                         <Input label="Last name" value={lastName} onChangeText={setLastName}></Input>
                         <Input label="First name" value={firstName} onChangeText={setFirstName}></Input>
                         <Input label="Age" value={age} onChangeText={setAge}></Input>
 
-                        <Button title="addProfile" onPress={() => addProfile() }></Button>
+                        <Button title="addProfile" onPress={() => AddProfile() }></Button>
 
                         <TouchableHighlight
-                        style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                        style={{ ...style.openButton, backgroundColor: '#2196F3' }}
                         onPress={() => {
                             setModalVisible(!modalVisible);
                         }}>
-                        <Text style={styles.textStyle}>Hide Modal</Text>
+                        <Text style={style.textStyle}>Hide Modal</Text>
                         </TouchableHighlight>
                     </View>
                     </View>
                 </Modal>
-                <TouchableHighlight
-                    style={styles.openButton}
-                    onPress={() => {
-                    setModalVisible(true);
-                    }}>
-                    <Text style={styles.textStyle}>Show Modal</Text>
-                </TouchableHighlight>
-                {
-                    listOfData>=0 ? 
-                    <Text>Aucune données</Text> 
-                    : <FlatList style={styles.list} data={listOfData}  renderItem={({ item }) => <Item item={item} /> } keyExtractor={item => item.firstName} />
-                }
-                <Button title="suppDoc" onPress={() => suppProfile() }></Button>
+                <View style={style.viewButton}>
+                    {/* <TouchableHighlight
+                        style={style.openButton}
+                        onPress={() => {
+                        setModalVisible(true);
+                        }}>
+                        <Text style={style.textStyle}>Ajouter un profil</Text>
+                    </TouchableHighlight> */}
+                    <Button style={style.openButton} title="Ajouter un profil" onPress={() => setModalVisible(true) }></Button>
+                    <Button style={style.openButton} title="Supprimer mon profil" onPress={() => SuppProfile() }></Button>
+                </View>
             </View>
 };
 
-const styles = StyleSheet.create({
-    button: {
+const style = StyleSheet.create({
+    buttonLogOut: {
+        marginTop: 10,
         marginLeft: 'auto',
-        marginRight: '1rem'
+        marginRight: '1rem',
+    },
+    text: {
+        color: 'black',
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    viewButton: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: 'space-around',
+        marginTop: 80
+    },
+    openButton: {
+        backgroundColor: '#2089DC',
+        borderRadius: 5,
+        padding: 5,
+    },
+    textStyle: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 18
+    },
+    list:{
+        height: 50,
+        marginTop: 10,
     },
     centeredView: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 22,
-      },
-      modalView: {
+    },
+    modalView: {
         margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,
@@ -140,26 +169,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-      },
-      openButton: {
-        backgroundColor: '#F194FF',
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-      },
-      textStyle: {
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
-      },
-      modalText: {
+    },
+    modalText: {
         marginBottom: 15,
         textAlign: 'center',
-      },
-      list:{
-          height: 200,
-          marginTop: 200,
-      }
+    },
   });
 
 export default HomeScreen;
