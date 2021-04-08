@@ -14,17 +14,23 @@ const HomeScreen = ({navigation}) => {
     const currentUser = firebase.firebase.auth().currentUser.uid;
     const [ listOfData, setListOfData ] = useState([]);
 
+    //(async () => {
+    //}) 
+
     useEffect(() => {
-            const query = firebase.db.collection('users').doc(currentUser).onSnapshot(doc => {
+        const query = firebase.db.collection('users').doc(currentUser).onSnapshot(doc => {
+            if(!doc.exists){
+                return
+            }
             const { firstName, lastName, age } = doc.data();
-                setListOfData([...listOfData, {
-                    firstName,
-                    lastName,
-                    age,
+            setListOfData([...listOfData, {
+                firstName,
+                lastName,
+                age,
                 }])
-            })
-        }, [currentUser]);
-        console.log(listOfData);
+        })
+      }, [currentUser]);
+      console.log(listOfData);
 
     const logOut = async() => {
         try{
