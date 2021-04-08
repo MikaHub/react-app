@@ -3,7 +3,6 @@ import {TouchableOpacity, View} from 'react-native';
 import {Text, Input, Button} from 'react-native-elements';
 import firebase from '../firebase/firebase';
 
-
 const SigninScreen = ({navigation}) => {
     const [ email, setEmail ]= useState('');
     const [ password, setPassword ] = useState('');
@@ -11,7 +10,7 @@ const SigninScreen = ({navigation}) => {
 
     const signIn = async() => {
         try{
-            const response = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const response = await firebase.firebase.auth().signInWithEmailAndPassword(email, password);
             navigation.navigate('Home');
         }
         catch(err){

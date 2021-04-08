@@ -10,7 +10,7 @@ const SignupScreen = ({navigation}) => {
 
     const signUp = async() => {
         try{
-            const response = await firebase.auth().createUserWithEmailAndPassword(email, password);
+            const response = await firebase.firebase.auth().createUserWithEmailAndPassword(email, password);
             navigation.navigate('Home')
         }
         catch(err){

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {View, StyleSheet, Modal, TouchableHighlight} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {View, StyleSheet, Modal, TouchableHighlight, FlatList} from 'react-native';
 import {Text, Button, Input} from 'react-native-elements';
 import firebase from '../firebase/firebase';
 import 'firebase/firestore';
@@ -11,10 +11,24 @@ const HomeScreen = ({navigation}) => {
     const [ lastName, setLastName ] = useState('');
     const [ age, setAge ]= useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const currentUser = firebase.firebase.auth().currentUser.uid;
+    const [ listOfData, setListOfData ] = useState([]);
+
+    useEffect(() => {
+            const query = firebase.db.collection('users').doc(currentUser).onSnapshot(doc => {
+            const { firstName, lastName, age } = doc.data();
+                setListOfData([...listOfData, {
+                    firstName,
+                    lastName,
+                    age,
+                }])
+            })
+        }, [currentUser]);
+        console.log(listOfData);
 
     const logOut = async() => {
         try{
-            await firebase.auth().signOut()
+            await firebase.firebase.auth().signOut()
             navigation.reset({
                 routes: [{name : 'Signup'}]
             })
@@ -24,18 +38,37 @@ const HomeScreen = ({navigation}) => {
         }
     }
 
-    // const getUser = async() => {
-    //     const snapshot = firebase.db.collection('users').doc('VcI4AOiZ7xIsqmSoTpqX').get();
-    //     const data = (await snapshot).docs.map(doc => doc.data())
-    //     console.log();
-    // }
+    const getUser = async() => {
+        //const collection = firebase.db.collection('users').get();
+        //const user = (await collection).docs(currentUser).get();
+        const query = firebase.db.collection('users').doc(currentUser).onSnapshot(doc => {
+            const { firstName, lastName, age } = doc.data();
+            listOfData.push({
+                firstName,
+                lastName,
+                age,
+            })
+            setListOfData(listOfData)
+        })
+    }
     const addProfile = async() => {
-        firebase.db.collection('users').add({
+        firebase.db.collection('users').doc(currentUser).set({
             firstName: firstName,
             lastName: lastName,
             age : age
         })
     }
+
+    function Item({ item }) {
+        return (
+          <View>
+            <Text>{item.age}</Text>
+            <Text>{item.firstName}</Text>
+            <Text>{item.lastName}</Text>
+          </View>
+        );
+      }
+
     return  <View>
                 <Text>Home screen</Text>
                 <Button style={styles.button} title="Logout" onPress={() => logOut() }></Button>
@@ -76,9 +109,13 @@ const HomeScreen = ({navigation}) => {
                     }}>
                     <Text style={styles.textStyle}>Show Modal</Text>
                 </TouchableHighlight>
-                <Button title="getDoc"></Button>
+                <Button title="getDoc" onPress={() => getUser() }></Button>
+                {
+                    listOfData>=0 ? 
+                    <Text>Aucune données</Text> 
+                    : <FlatList style={styles.list} data={listOfData}  renderItem={({ item }) => <Item item={item} /> } keyExtractor={item => item.firstName} />
+                }
             </View>
-
 };
 
 const styles = StyleSheet.create({
@@ -122,6 +159,10 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         textAlign: 'center',
       },
+      list:{
+          height: 200,
+          marginTop: 200,
+      }
   });
 
 export default HomeScreen;
