@@ -1,9 +1,9 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomePage from './screens/HomePage';
-import SignupPage from './screens/SignupPage';
-import SigninPage from './screens/SigninPage';
+import HomeScreen from './screens/HomeScreen';
+import SignupScreen from './screens/SignupScreen';
+import SigninScreen from './screens/SigninScreen';
 
 const Stack = createStackNavigator()
 
@@ -11,9 +11,9 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Signup">
-        <Stack.Screen name="Signin" component={SigninPage} />
-        <Stack.Screen name="Signup" component={SignupPage} />
-        <Stack.Screen name="Home" component={HomePage} />
+        <Stack.Screen name="Signin" component={SigninScreen} />
+        <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} options={() => ({headerLeft: null})}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

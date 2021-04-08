@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Text, Input, Button} from 'react-native-elements';
 import firebase from './firebase/firebase';
 
 
-const SigninPage = ({navigation}) => {
+const SigninScreen = ({navigation}) => {
     const [ email, setEmail ]= useState('');
     const [ password, setPassword ] = useState('');
     const [ error, setError ] = useState('');
@@ -12,7 +12,7 @@ const SigninPage = ({navigation}) => {
     const signIn = async() => {
         try{
             const response = await firebase.auth().signInWithEmailAndPassword(email, password);
-            navigation.navigate('Home')
+            navigation.navigate('Home');
         }
         catch(err){
             setError(err.message);
@@ -33,4 +33,4 @@ const SigninPage = ({navigation}) => {
             </View>
 };
 
-export default SigninPage;
+export default SigninScreen;

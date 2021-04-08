@@ -3,7 +3,7 @@ import {TouchableOpacity, View} from 'react-native';
 import {Text, Input, Button} from 'react-native-elements';
 import firebase from './firebase/firebase';
 
-const SignupPage = ({navigation}) => {
+const SignupScreen = ({navigation}) => {
     const [ email, setEmail ]= useState('');
     const [ password, setPassword ] = useState('');
     const [ error, setError ] = useState('');
@@ -34,4 +34,4 @@ const SignupPage = ({navigation}) => {
    
 };
 
-export default SignupPage;
+export default SignupScreen;
