@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Text, Input, Button} from 'react-native-elements';
-import firebase from './firebase/firebase';
+import firebase from '../firebase/firebase';
 
 const SignupScreen = ({navigation}) => {
     const [ email, setEmail ]= useState('');

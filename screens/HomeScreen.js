@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text, Button} from 'react-native-elements';
-import firebase from './firebase/firebase';
+import firebase from '../firebase/firebase';
 
 const HomeScreen = ({navigation}) => {
     const [ error, setError ] = useState('');
