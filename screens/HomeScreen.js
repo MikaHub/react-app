@@ -28,25 +28,6 @@ const HomeScreen = ({ navigation }) => {
         })
     }, [currentUser]);
 
-    _getLocationAsync = async () => {
-        try {
-            let { status } = await Permissions.askAsync(Permissions.LOCATION);
-            if (status !== 'granted') {
-                this.setState({
-                    errorMessage: 'Permission to access location was denied'
-                });
-                return;
-            }
-
-            let location = await Location.getCurrentPositionAsync({});
-            this.setState({ location });
-        } catch (error) {
-            let status = Location.getProviderStatusAsync();
-            if (!status.locationServicesEnabled) {
-                this.setState({ isLocationModalVisible: true });
-            }
-        }
-    };
 
     const LogOut = async () => {
         try {
